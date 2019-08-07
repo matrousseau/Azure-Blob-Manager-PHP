@@ -36,7 +36,10 @@ setx ACCOUNT_KEY=<youraccountkey>
 
 ## Installation
 
-Open a command shell and type php composer.phar install
+Open a command shell and type:
+```bash
+php composer.phar install
+```
 
 The [Azure storage documentation](https://docs.microsoft.com/azure/storage/) includes a rich set of tutorials and conceptual articles, which serve as a good complement to the samples.
 
