@@ -12,45 +12,41 @@ use MicrosoftAzure\Storage\Blob\Models\PublicAccessType;
 
 $connectionString = "DefaultEndpointsProtocol=https;AccountName=".getenv('ACCOUNT_NAME').";AccountKey=".getenv('ACCOUNT_KEY');
 
-// Create blob client.
-$blobClient = BlobRestProxy::createBlobService($connectionString);
+$namefile = "20190420_065632-54910-33627057250-IN.json";
 
-$fileToUpload = "20190420_065632-54910-33627057250-IN.wav";
+// Create blob client.
+$blobRestProxy = BlobRestProxy::createBlobService($connectionString);
+
+function export_stream_to_json($test, $namefile) {
+  $dest1 = fopen($namefile, 'w');
+  stream_copy_to_stream($test, $dest1);
+}
 
 if (!isset($_GET["Cleanup"])) {
 
-      $containerName = "cs-blob-input";
+      $containerName = "cs-blob-output";
 
     try {
 
-        // Getting local file so that we can upload it to Azure
-        $myfile = fopen($fileToUpload, "w") or die("Unable to open file!");
-        fclose($myfile);
-
-        # Upload file as a block blob
-        echo "Uploading BlockBlob: ".PHP_EOL;
-        echo $fileToUpload;
-        echo "<br />";
-
-        $content = fopen($fileToUpload, "r");
-
-        //Upload blob
-        $blobClient->createBlockBlob($containerName, $fileToUpload, $content);
-
-        // List blobs.
         $listBlobsOptions = new ListBlobsOptions();
-        echo "These are the blobs present in the container: ";
+        echo "These are the blobs present in the container: ".PHP_EOL;
 
         do{
-            $result = $blobClient->listBlobs($containerName, $listBlobsOptions);
+            $result = $blobRestProxy->listBlobs($containerName, $listBlobsOptions);
             foreach ($result->getBlobs() as $blob)
             {
-                echo $blob->getName().": ".$blob->getUrl()."<br />";
-                echo "<br />";
+                echo $blob->getName().PHP_EOL;
             }
 
             $listBlobsOptions->setContinuationToken($result->getContinuationToken());
         } while($result->getContinuationToken());
+
+        // Get blob.
+      	$blob = $blobRestProxy->getBlob($containerName, $namefile);
+      	$blobstream = $blob->getContentStream();
+        export_stream_to_json($blobstream, $namefile);
+
+
 
     }
     catch(ServiceException $e){
@@ -75,7 +71,7 @@ else
         echo "Deleting Container".PHP_EOL;
         echo $_GET["containerName"].PHP_EOL;
         echo "<br />";
-        $blobClient->deleteContainer($_GET["containerName"]);
+        $blobRestProxy->deleteContainer($_GET["containerName"]);
     }
     catch(ServiceException $e){
         $code = $e->getCode();
