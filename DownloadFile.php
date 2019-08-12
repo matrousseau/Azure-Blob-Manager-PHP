@@ -9,7 +9,15 @@ use MicrosoftAzure\Storage\Blob\Models\CreateContainerOptions;
 use MicrosoftAzure\Storage\Blob\Models\PublicAccessType;
 
 $connectionString = "DefaultEndpointsProtocol=https;AccountName=".getenv('ACCOUNT_NAME').";AccountKey=".getenv('ACCOUNT_KEY');
+
+// NOM DU FICHIER A TELECHARGER
 $namefile = "testoff.json";
+
+// NOM DU STOCKAGE
+// * pour upload : "cs-blob-input"
+// * pour download : "cs-blob-output"
+
+$containerName = "cs-blob-output";
 
 // Create blob client.
 $blobRestProxy = BlobRestProxy::createBlobService($connectionString);
@@ -20,7 +28,6 @@ function export_stream_to_json($test, $namefile) {
 }
 
 if (!isset($_GET["Cleanup"])) {
-  $containerName = "cs-blob-output";
 
   try {
     echo $containerName;

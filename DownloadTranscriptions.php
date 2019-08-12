@@ -12,6 +12,7 @@ use MicrosoftAzure\Storage\Blob\Models\PublicAccessType;
 
 $connectionString = "DefaultEndpointsProtocol=https;AccountName=".getenv('ACCOUNT_NAME').";AccountKey=".getenv('ACCOUNT_KEY');
 
+// NOM DU FICHIER A TELECHARGER
 $namefile = "20190420_065632-54910-33627057250-IN.json";
 
 // Create blob client.
@@ -24,6 +25,9 @@ function export_stream_to_json($test, $namefile) {
 
 if (!isset($_GET["Cleanup"])) {
 
+// NOM DU STOCKAGE
+// * pour upload : "cs-blob-input"
+// * pour download : "cs-blob-output"
       $containerName = "cs-blob-output";
 
     try {
