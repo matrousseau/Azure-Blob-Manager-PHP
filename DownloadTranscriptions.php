@@ -1,7 +1,6 @@
 <?php
 
 require_once 'vendor/autoload.php';
-require_once "./random_string.php";
 
 use WindowsAzure\Common\ServicesBuilder;
 use MicrosoftAzure\Storage\Blob\BlobRestProxy;
@@ -13,7 +12,7 @@ use MicrosoftAzure\Storage\Blob\Models\PublicAccessType;
 $connectionString = "DefaultEndpointsProtocol=https;AccountName=".getenv('ACCOUNT_NAME').";AccountKey=".getenv('ACCOUNT_KEY');
 
 // NOM DU FICHIER A TELECHARGER
-$namefile = "20190420_065632-54910-33627057250-IN.json";
+$namefile = "20190420_065632-54910-33627057250-IN_brut.json";
 
 // Create blob client.
 $blobRestProxy = BlobRestProxy::createBlobService($connectionString);
