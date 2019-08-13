@@ -12,7 +12,7 @@ use MicrosoftAzure\Storage\Blob\Models\PublicAccessType;
 $connectionString = "DefaultEndpointsProtocol=https;AccountName=".getenv('ACCOUNT_NAME').";AccountKey=".getenv('ACCOUNT_KEY');
 
 // NOM DU FICHIER A TELECHARGER
-$namefile = "20190420_065632-54910-33627057250-IN_brut.json";
+$namefile = "20190420_065632-54910-33627057250-IN.json";
 
 // Create blob client.
 $blobRestProxy = BlobRestProxy::createBlobService($connectionString);
@@ -20,6 +20,14 @@ $blobRestProxy = BlobRestProxy::createBlobService($connectionString);
 function export_stream_to_json($test, $namefile) {
   $dest1 = fopen($namefile, 'w');
   stream_copy_to_stream($test, $dest1);
+}
+
+function brut_json($string) {
+
+  $str_arr = preg_split ("/\./", $string);
+  $json_prefix = "_brut.";
+  return $str_arr[0].$json_prefix.$str_arr[1];
+
 }
 
 if (!isset($_GET["Cleanup"])) {
@@ -48,6 +56,10 @@ if (!isset($_GET["Cleanup"])) {
       	$blob = $blobRestProxy->getBlob($containerName, $namefile);
       	$blobstream = $blob->getContentStream();
         export_stream_to_json($blobstream, $namefile);
+
+        $blob = $blobRestProxy->getBlob($containerName, brut_json($namefile));
+        $blobstream = $blob->getContentStream();
+        export_stream_to_json($blobstream, brut_json($namefile));
 
 
 
